@@ -1,0 +1,36 @@
+<log4r_config>
+
+  <pre_config>
+    <global level="DEBUG" />
+    <parameter name="messageFormat" value="%d [%5l] (%C) %m" />
+    <parameter name="dateFormat" value="%Y-%m-%dT%H:%M:%S.%3N%:z" />
+  </pre_config>
+
+  <outputter name="default-file" type="RollingFileOutputter" filename="#{uu_home}/logs/uu_os.log" maxsize="5242880" level="ERROR">
+    <formatter type="PatternFormatter" pattern="#{messageFormat}">
+      <date_pattern>#{dateFormat}</date_pattern>
+    </formatter>
+  </outputter>
+  <outputter name="perflog" type="RollingFileOutputter"
+    filename="#{uu_home}/logs/uu_c3_perflog.log" maxsize="5242880" level="DEBUG">
+    <formatter type="PatternFormatter" pattern="%d (%X{executionId}) %m">
+      <date_format>#{dateFormat}</date_format>
+    </formatter>
+  </outputter>
+  <outputter name="c3log" type="RollingFileOutputter"
+    filename="#{uu_home}/logs/uu_c3.log" maxsize="5242880" level="DEBUG">
+    <formatter type="PatternFormatter" pattern="%d (%X{executionId}) %m">
+      <date_format>#{dateFormat}</date_format>
+    </formatter>
+  </outputter>
+
+  <!-- Applog outputter requires installation of uu_applog gem to be functional. -->
+  <!-- <outputter name="default-applog" type="UU::AppLog::Outputter" level="DEBUG" /> -->
+  <!-- Switch level to INFO in order to enable logging for performance tuning purposes. -->
+  <logger name="UuC3::Helper::PerformanceLogger" level="INFO" outputters="perflog" additive="false"/>
+<logger name="UuC3::Helper::ProgressMonitor" outputters="c3log"/>
+
+  <!-- Switch level to DEBUG in order to log invoked scripts. -->
+  <logger name="UuC3::Helper::ScriptExecutor" outputters="c3log"/>
+ 
+</log4r_config>
